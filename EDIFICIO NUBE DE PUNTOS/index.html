@@ -1,0 +1,554 @@
+<html>
+	<head>
+		<title>TAJ MAHAL</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+//SET UP SCENE & CAMERA
+	var scene;
+	var camera;
+
+//SET UP SHAPES & MATERIAL
+	var geometry;
+	var material1 = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 0.1 });;
+	var mesh;
+/* 
+  add geomerty and material to mesh.
+  mesh(geomerty, matrial)
+*/
+
+//RENDER THE SCENE
+	var renderer;
+
+	init();
+	animate();
+
+	function init() {
+
+	  scene = new THREE.Scene();
+	  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000); /* 10000 the vanishing point(how far you can see) */
+
+//x,y,z. increase the camera height on the y axis
+	camera.position.set(0, 2, 0);
+
+//looks in the center of the scene since that where we always start when creating a scene. 0,0,0
+	camera.lookAt(scene.position);
+
+//set size to full screen
+	renderer = new THREE.WebGLRenderer({antialias:true});
+	renderer.setSize(window.innerWidth, window.innerHeight);
+
+//add to the DOM
+	document.body.appendChild(renderer.domElement);
+
+// PRIMER EDIFICIO BLOQUE PISO
+var material = new THREE.PointsMaterial();
+  var geometry = new THREE.BoxGeometry(10,1,10);
+  var cube1 = new THREE.Points( geometry, material );
+  
+cube1.position.y=0.75;
+cube1.position.z=0;
+cube1.position.x=1.25;
+
+  //increase the steps to make squares bigger. must be divisible by the size
+  var size = 50,
+    steps = 0.5;
+
+  geometry = new THREE.Geometry();
+  material = new THREE.LineBasicMaterial({
+    color: 'teal'
+  });
+//BASE TAJ MAHAL
+	var geobase = new THREE.Geometry();
+            
+
+	var res = 20;
+ 
+	var j =-20;
+	var i= -20; 
+	var k= 0 
+ 	while (k!= 0.5){        
+		while (i!= res){
+			while (j!= res){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = j ;
+                    
+				punto.y = k ;
+                    
+				punto.z =  i;
+
+
+				j=j+0.5;  
+				geobase.vertices.push( punto );
+				}
+
+			j=-20;
+			i=i +0.5;            
+			}
+
+		i=-20;
+		k=k+0.1;
+		}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto = new THREE.PointsMaterial( { color: 0xF6FC03, size: 0.1 } );
+			
+			
+	//CREAR LOS OBJETOS
+			
+	var BASE = new THREE.Points( geobase, matPunto )
+	scene.add( BASE );
+//TORRES ESQUINERAS TAJ MAHAL
+	var geocilindro1 = new THREE.Geometry();
+            
+
+	var res = 25;
+ 
+	var anch = 1.1;
+	var j =0; 
+	var k= 0; 
+ 	while (k!= 15){        
+			while (j!= 25){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = anch * Math.cos((j*2*Math.PI)/res) ;
+                    
+				punto.y = k;
+                    
+				punto.z = anch * Math.sin((j*2*Math.PI)/res);
+
+
+				j=j+0.5;  
+				geocilindro1.vertices.push( punto );
+				}
+
+
+			j= 0;
+			k= k + 0.5;
+			anch= anch - 0.02;
+			}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto = new THREE.PointsMaterial( { color: 0xCFEF1B, size: 0.1 } );
+			
+			
+	//CREAR LOS OBJETOS
+			
+	var CILINDRO1 = new THREE.Points( geocilindro1, matPunto )
+	CILINDRO1.position.y=0;
+	CILINDRO1.position.z= 19;
+	CILINDRO1.position.x= 19;
+	scene.add( CILINDRO1);
+	var CILINDRO2 = new THREE.Points( geocilindro1, matPunto )
+	CILINDRO2.position.y=0;
+	CILINDRO2.position.z= -19;
+	CILINDRO2.position.x= 19;
+	scene.add( CILINDRO2 );
+	var CILINDRO3 = new THREE.Points( geocilindro1, matPunto )
+	CILINDRO3.position.y=0;
+	CILINDRO3.position.z= -19;
+	CILINDRO3.position.x= -19;
+	scene.add( CILINDRO3 );
+	var CILINDRO4 = new THREE.Points( geocilindro1, matPunto )
+	CILINDRO4.position.y=0;
+	CILINDRO4.position.z= 19;
+	CILINDRO4.position.x= -19;
+	scene.add( CILINDRO4 );
+//CASA TAJ MAHAL
+	var geobase1 = new THREE.Geometry();
+            
+
+	var res = 7;
+ 
+	var j =-7;
+	var i= -7; 
+	var k= 0.5 
+ 	while (k!= 10){        
+		while (i!= res){
+			while (j!= res){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = j ;
+                    
+				punto.y = k ;
+                    
+				punto.z = i;
+
+
+				j=j+0.5;  
+				geobase1.vertices.push( punto );
+				}
+
+			j=-7;
+			i=i +0.5;            
+			}
+
+		i=-7;
+		k=k+0.5;
+		}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 0.1 } );
+			
+			
+	//CREAR LOS OBJETOS
+			
+	var CASA = new THREE.Points( geobase1, matPunto )
+	CASA.position.y=0;
+	CASA.position.z=0;
+	CASA.position.x=0;
+	scene.add( CASA );
+//ENTRADA TAJ MAHAL
+	var geobase2 = new THREE.Geometry();
+            
+
+	var res = 7;
+ 
+	var j =-1;
+	var i= -1; 
+	var k= 0.5 
+ 	while (k!= 10){        
+		while (i!= res){
+			while (j!= res){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = j ;
+                    
+				punto.y = k ;
+                    
+				punto.z = i;
+
+
+				j=j+0.5;  
+				geobase2.vertices.push( punto );
+				}
+
+			j=-1;
+			i=i +0.5;            
+			}
+
+		i=-1;
+		k=k+0.5;
+		}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 0.1 } );
+			
+			
+	//CREAR LOS OBJETOS
+			
+	var ENTRADA = new THREE.Points( geobase2, matPunto )
+	ENTRADA.position.y=0;
+	ENTRADA.position.z= -10;
+	ENTRADA.position.x=-10;
+	scene.add( ENTRADA );
+	var ENTRADA1 = new THREE.Points( geobase2, matPunto )
+	ENTRADA1.position.y=0;
+	ENTRADA1.position.z= 6;
+	ENTRADA1.position.x=-10;
+	scene.add( ENTRADA1 );
+	var ENTRADA2 = new THREE.Points( geobase2, matPunto )
+	ENTRADA2.position.y=0;
+	ENTRADA2.position.z= -10;
+	ENTRADA2.position.x=5;
+	scene.add( ENTRADA2 );
+	var ENTRADA3 = new THREE.Points( geobase2, matPunto )
+	ENTRADA3.position.y=0;
+	ENTRADA3.position.z= 6;
+	ENTRADA3.position.x=6;
+	scene.add( ENTRADA3 );
+//CUPULA
+		var circleGeometry3 = new THREE.Geometry();
+		var re = 180;
+		var re2 = 360;
+
+		for(var j=-180; j<re; j++){
+  		     for(var i=-360; i<re2; i++){
+         		var punto = new THREE.Vector3();
+				punto.y= 5 * Math.cos(Math.PI*j/re);	
+				punto.x = 5 * Math.cos(Math.PI*i/re2)*Math.sin(Math.PI*j/re); 					
+		        	punto.z = 5 * Math.sin(Math.PI*i/re2)*Math.sin(Math.PI*j/re);
+				if( punto.y<= -1.85){
+					break;
+				}
+         		circleGeometry3.vertices.push(punto); 				
+  		   }
+ 		}
+         
+		var mater = new THREE.PointsMaterial({color:0xFFFFFF, size: 0.01}); 
+		var circle = new THREE.Points(circleGeometry3, mater)
+		circle.position.y=11.5;
+		circle.position.z= 0;
+		circle.position.x=0;;
+		scene.add(circle);
+//CUPULAS CASA
+		var circleGeometry3 = new THREE.Geometry();
+		var re = 180;
+		var re2 = 360;
+
+		for(var j=-180; j<re; j++){
+  		     for(var i=-360; i<re2; i++){
+         		var punto = new THREE.Vector3();
+				punto.y= 2 * Math.cos(Math.PI*j/re);	
+				punto.x = 2 * Math.cos(Math.PI*i/re2)*Math.sin(Math.PI*j/re); 					
+		        	punto.z = 2 * Math.sin(Math.PI*i/re2)*Math.sin(Math.PI*j/re);
+				if( punto.y<= 0){
+					break;
+				}
+         		circleGeometry3.vertices.push(punto); 				
+  		   }
+ 		}
+         
+		var mater = new THREE.PointsMaterial({color:0xFFFFFF, size: 0.01}); 
+		var circle1 = new THREE.Points(circleGeometry3, mater)
+		circle1.position.y=9.5;
+		circle1.position.z= 8.5;
+		circle1.position.x= 9;
+		scene.add(circle1);
+		var circle2 = new THREE.Points(circleGeometry3, mater)
+		circle2.position.y=9.5;
+		circle2.position.z= -7;
+		circle2.position.x= 9;
+		scene.add(circle2);
+		var circle3 = new THREE.Points(circleGeometry3, mater)
+		circle3.position.y=9.5;
+		circle3.position.z= 8.5;
+		circle3.position.x= -7;
+		scene.add(circle3);
+		var circle4 = new THREE.Points(circleGeometry3, mater)
+		circle4.position.y=9.5;
+		circle4.position.z= -7;
+		circle4.position.x= -7;
+		scene.add(circle4);
+//CUPULA TORRES
+		var circleGeometry3 = new THREE.Geometry();
+		var re = 180;
+		var re2 = 360;
+
+		for(var j=-180; j<re; j++){
+  		     for(var i=-360; i<re2; i++){
+         		var punto = new THREE.Vector3();
+				punto.y= 0.8 * Math.cos(Math.PI*j/re);	
+				punto.x = 0.8 * Math.cos(Math.PI*i/re2)*Math.sin(Math.PI*j/re); 					
+		        	punto.z = 0.8 * Math.sin(Math.PI*i/re2)*Math.sin(Math.PI*j/re);
+				if( punto.y<= 0){
+					break;
+				}
+         		circleGeometry3.vertices.push(punto); 				
+  		   }
+ 		}
+         
+		var mater = new THREE.PointsMaterial({color:0xCFEF1B, size: 0.01}); 
+		var CUPULA = new THREE.Points(circleGeometry3, mater)
+		CUPULA.position.y=15;
+		CUPULA.position.z= 19;
+		CUPULA.position.x=19;
+		scene.add(CUPULA);
+		var CUPULA1 = new THREE.Points(circleGeometry3, mater)
+		CUPULA1.position.y=15;
+		CUPULA1.position.z= -19;
+		CUPULA1.position.x=-19;
+		scene.add(CUPULA1);
+		var CUPULA2 = new THREE.Points(circleGeometry3, mater)
+		CUPULA2.position.y=15;
+		CUPULA2.position.z= -19;
+		CUPULA2.position.x=19;
+		scene.add(CUPULA2);
+		var CUPULA3 = new THREE.Points(circleGeometry3, mater)
+		CUPULA3.position.y=15;
+		CUPULA3.position.z= 19;
+		CUPULA3.position.x=-19;
+		scene.add(CUPULA3);
+
+//TORRES ESQUINERAS TAJ MAHAL
+	var geocilindro1 = new THREE.Geometry();
+            
+
+	var res = 25;
+ 
+	var anch = 0.2;
+	var j =0; 
+	var k= 0; 
+ 	while (k!= 5){        
+			while (j!= 25){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = anch * Math.cos((j*2*Math.PI)/res) ;
+                    
+				punto.y = k;
+                    
+				punto.z = anch * Math.sin((j*2*Math.PI)/res);
+
+
+				j=j+0.5;  
+				geocilindro1.vertices.push( punto );
+				}
+
+
+			j= 0;
+			k= k + 0.5;
+			anch= anch - 0.02;
+			}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto = new THREE.PointsMaterial( { color: 0xCFEF1B, size: 0.1 } );
+
+	var matPunto2 = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 0.1 } );			
+			
+	//CREAR LOS OBJETOS
+			
+	var PUNTA1 = new THREE.Points( geocilindro1, matPunto )
+	PUNTA1.position.y=16;
+	PUNTA1.position.z= 19;
+	PUNTA1.position.x= 19;
+	scene.add( PUNTA1);
+	var PUNTA2 = new THREE.Points( geocilindro1, matPunto )
+	PUNTA2.position.y=16;
+	PUNTA2.position.z= -19;
+	PUNTA2.position.x= -19;
+	scene.add( PUNTA2);
+	var PUNTA3 = new THREE.Points( geocilindro1, matPunto )
+	PUNTA3.position.y=16;
+	PUNTA3.position.z= -19;
+	PUNTA3.position.x= 19;
+	scene.add( PUNTA3);
+	var PUNTA4 = new THREE.Points( geocilindro1, matPunto )
+	PUNTA4.position.y=16;
+	PUNTA4.position.z= 19;
+	PUNTA4.position.x= -19;
+	scene.add( PUNTA4);
+	var PUNTA5 = new THREE.Points( geocilindro1, matPunto2 )
+	PUNTA5.position.y=9.5;
+	PUNTA5.position.z= 8.5;
+	PUNTA5.position.x= 9;
+	scene.add( PUNTA5);
+	var PUNTA6 = new THREE.Points( geocilindro1, matPunto2 )
+	PUNTA6.position.y=9.5;
+	PUNTA6.position.z= -7;
+	PUNTA6.position.x= 9;
+	scene.add( PUNTA6);
+	var PUNTA7 = new THREE.Points( geocilindro1, matPunto2 )
+	PUNTA7.position.y=9.5;
+	PUNTA7.position.z= 8.5;
+	PUNTA7.position.x= -7;
+	scene.add( PUNTA7);
+	var PUNTA8 = new THREE.Points( geocilindro1, matPunto2 )
+	PUNTA8.position.y=9.5;
+	PUNTA8.position.z= -7;
+	PUNTA8.position.x= -7;
+	scene.add( PUNTA8);
+//PUNTA CUPULA CENTRAL 
+	var geocilindro12 = new THREE.Geometry();
+            
+
+	var res = 25;
+ 
+	var anch = 0.4;
+	var j =0; 
+	var k= 0; 
+ 	while (k!= 8){        
+			while (j!= 25){              
+                    
+ 				var punto = new THREE.Vector3();
+                    
+				punto.x = anch * Math.cos((j*2*Math.PI)/res) ;
+                    
+				punto.y = k;
+                    
+				punto.z = anch * Math.sin((j*2*Math.PI)/res);
+
+
+				j=j+0.5;  
+				geocilindro12.vertices.push( punto );
+				}
+
+
+			j= 0;
+			k= k + 0.5;
+			anch= anch - 0.02;
+			}
+			
+			
+	//CREAR LOS MATERIALES            
+			
+	var matPunto2 = new THREE.PointsMaterial( { color: 0xFFFFFF, size: 0.1 } );			
+			
+	//CREAR LOS OBJETOS
+			
+	var PUNTAC = new THREE.Points( geocilindro12, matPunto2 )
+	PUNTAC.position.y=16.5 ;
+	PUNTAC.position.z= 0;
+	PUNTAC.position.x= 0;
+	scene.add( PUNTAC);
+
+
+  	for (var i = -size; i <= size; i += steps) {
+//draw lines one way
+		geometry.vertices.push(new THREE.Vector3(-size, -0.04, i));
+		geometry.vertices.push(new THREE.Vector3(size, -0.04, i));
+
+//draw lines the other way
+		geometry.vertices.push(new THREE.Vector3(i, -0.04, -size));
+		geometry.vertices.push(new THREE.Vector3(i, -0.04, size));
+ 	 }
+
+//THREE.LinePieces prevents connecting of vertices
+	var line = new THREE.LineSegments(geometry, material, THREE.LinePieces);
+
+  	scene.add(line);
+
+//always render the scene
+	render();
+	}
+
+	function animate() {
+		requestAnimationFrame(animate);
+		render();
+	}
+
+//resize viewport
+	window.addEventListener('resize', function(){
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	renderer.setSize( width, height);
+
+	camera.aspect = width / height; 
+	camera.updateProjectionMatrix();
+	});
+
+	function render() {
+//using timer as animation
+		var speed = Date.now() * 0.00025;
+		camera.position.x = Math.cos(speed)*  50;
+		camera.position.y = 25;
+		camera.position.z =  Math.sin(speed)* 50;
+	
+		camera.lookAt(0,6,0); //0,0,0
+		renderer.render(scene, camera);
+	}
+
+			
+		</script>
+	</body>
+</html>

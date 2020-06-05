@@ -1,0 +1,678 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>ILUMINACION</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.js"></script>    
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src="js/csg.js"></script>
+		<script src="js/THREE.CSG.js"></script>
+    <script>
+		var scene, aspect, camera, renderer,controls;
+    var ambientLight,light;
+    var USE_WIREFRAME = false;
+    var geometry1, geometry2;
+		var startTime = Date.now();
+    var carro;
+		
+		var axesHelper1 = new THREE.AxesHelper( 1 );
+				
+		var KeyW = false;
+		var KeyS = false;
+		var KeyA = false;
+		var KeyD = false;
+		var xAxis = true;
+		var yAxis = false;
+		var zAxis = false;
+		
+		var thetaSum=0;
+		var positivo=false;
+    
+		var startTime = Date.now();
+		
+		init();
+		animate();
+	
+		function init(){
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x000000 );
+        aspect = window.innerWidth / window.innerHeight;
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+        renderer.shadowMap.enabled = true;// 
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild( renderer.domElement );
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+				var onKeyDown = function ( event ) {
+				switch ( event.keyCode ) {
+					case 87: // TRASLADAR ADELANTE
+            KeyW = true;
+						break;
+					case 65: // TRASLADAR ATRÁS
+						KeyA = true;
+						break;
+					case 68: // ROTAR CW
+						KeyD = true;
+						break;
+					case 83: // ROTAR CCW
+						KeyS = true;
+						break;            
+			    };
+        };
+        var onKeyUp = function ( event ) {
+				switch ( event.keyCode ) {
+					case 87: // TRASLADAR ADELANTE
+            KeyW = false;
+						break;
+					case 65: // TRASLADAR ATRÁS
+						KeyA = false;
+						break;
+					case 68: // ROTAR CW
+						KeyD = false;
+						break;
+					case 83: // ROTAR CCW
+						KeyS = false;
+						break;
+				}
+			};
+			document.addEventListener( 'keydown', onKeyDown, false );
+			document.addEventListener( 'keyup', onKeyUp, false );
+				  
+		  	  
+        var size =30;
+        var arrowSize = 1;
+        var divisions = 25;
+        var origin = new THREE.Vector3( 0, 0, 0 );
+        var x = new THREE.Vector3( 1, 0, 0 );
+        var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );
+			  var color1 = new THREE.Color( 0x848B8E );
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA3333 );
+		  	var colorG = new THREE.Color( 0x33AA33 );
+		  	var colorB = new THREE.Color( 0x333366 );
+		  
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper = new THREE.AxesHelper( size );
+		  	var gridHelperXY = new THREE.GridHelper( size, divisions, color1, color1);
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+		  	var gridHelperYZ = new THREE.GridHelper( size, divisions, color1, color1 );
+            
+        //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+        gridHelperXY.rotateOnWorldAxis ( x, THREE.Math.degToRad(90) );
+        gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+        gridHelperYZ.rotateOnWorldAxis ( z, THREE.Math.degToRad(90) );
+            
+        //CREAR LAS FLECHAS QUE INDICAN LOS EJES DE COORDENADAS 3D
+        var arrowX = new THREE.ArrowHelper( x, origin, arrowSize, colorR );
+        var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
+        var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
+			carro1 ();
+        //CREAR ILUMINACIÓN
+        ambientLight = new THREE.AmbientLight(0xFFFFFF,0.05);
+        scene.add(ambientLight);
+        light = new THREE.PointLight(0xFFFFFF,1,100,2);
+        light.position.set(5,20,5);
+        light.castShadow = true;
+        light.shadow.camera.near = 20;
+        light.shadow.camera.far = 55;
+        scene.add(light);
+        var light1 = new THREE.SpotLight( 0x084EFD, 0.2, 100,Math.PI/12 );
+        light1.position.set( 5, 7, 8 );
+        light1.castShadow = true;
+        
+        scene.add( light1 );
+        var light2 = new THREE.SpotLight( 0x7FFD08, 0.2, 100 );
+        light2.position.set( 6, 7, 8 );
+        light2.castShadow = true;
+        scene.add( light2 );
+        var light3 = new THREE.SpotLight( 0xFD4F08,0.2 );
+        light3.position.set( 7, 7, 8 );
+        light3.castShadow = true;
+        scene.add( light3 );
+        var light4 = new THREE.SpotLight( 0xFDF608,0.2 );
+        light4.position.set( 8, 7, 8 );
+        light4.castShadow = true;
+        scene.add( light4 );
+        var light5 = new THREE.SpotLight( 0xFDF608,0.2 );
+        light5.position.set( 8, 7, -8 );
+        light5.castShadow = true;
+        scene.add( light5 );
+        var light6 = new THREE.SpotLight( 0xFD4F08,0.2 );
+        light6.position.set( 7, 7, -8 );
+        light6.castShadow = true;
+        scene.add( light6 );
+        var light7 = new THREE.SpotLight( 0x7FFD08,0.2 );
+        light7.position.set( 6, 7, -8 );
+        light7.castShadow = true;
+        scene.add( light7 );
+        var light8 = new THREE.SpotLight( 0x084EFD,0.2 );
+        light8.position.set( 5, 7, -8 );
+        light8.castShadow = true;
+        scene.add( light8 );
+        //MATERIALES
+        var ROJO = new THREE.MeshPhongMaterial({ color: 0xFF3A00 });
+        var AZUL = new THREE.MeshPhongMaterial({ color: 0x084EFD });
+        var AMARILLO = new THREE.MeshPhongMaterial({ color: 0xFDF608 });
+        var VERDE = new THREE.MeshPhongMaterial({ color: 0x47FD08 });
+        var GRISCLARO = new THREE.MeshPhongMaterial({ color: 0xCFC2C2 });
+        var BLANCO = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, opacity: 1, transparent: true });
+        var GRIS = new THREE.MeshPhongMaterial({ color: 0xBDBABA });
+        var GRISOSCURO = new THREE.MeshPhongMaterial({ color: 0x807979 });        
+        var matespejo = new THREE.MeshStandardMaterial( { color: 0xFFFFFF, metalness: 0.5, roughness: 0.3} );
+        
+        //PRIMITIVAS
+        var piso = new THREE.CylinderGeometry( 26, 26, 2, 32 );
+        var franjapiso =  new THREE.TorusGeometry( 15, 1, 2, 32,);
+        var escenario = new THREE.CylinderGeometry( 10, 10, 1, 32 );
+        var escenario2 =  new THREE.TorusGeometry( 10, 0.5, 3, 32,5.5);
+        var torre = new THREE.BoxGeometry (0.2,7,0.2);
+        var torrealta = new THREE.BoxGeometry (0.2,10,0.2);
+        var luz = new THREE.SphereGeometry( 0.3, 32, 32 );
+        var personaje1 = new THREE.SphereGeometry( 0.8, 32, 32 );
+        var personaje2 = new THREE.BoxGeometry (2,2,2);
+        //MESH 
+        var PISO = new THREE.Mesh(piso,GRIS);
+        var FRANJAPISO = new THREE.Mesh(franjapiso,ROJO);
+        var ESCENARIO = new THREE.Mesh(escenario,ROJO);
+        var ESCENARIO2 = new THREE.Mesh(escenario2,GRIS);
+        var TORRE = new THREE.Mesh(torre,GRISOSCURO);
+        var TORRE2 = new THREE.Mesh(torre,matespejo);
+        var TORRE3 = new THREE.Mesh(torre,matespejo);
+        var TORRE4 = new THREE.Mesh(torre,matespejo);
+        var TORREALTA = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA2 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA3 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA4 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA5 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA6 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA7 = new THREE.Mesh(torrealta,matespejo);
+        var TORREALTA8 = new THREE.Mesh(torrealta,matespejo);
+        var PERSONAJE1 = new THREE.Mesh(personaje1,matespejo);
+        var PERSONAJE2 = new THREE.Mesh(personaje2,matespejo);
+        var LUZ = new THREE.Mesh (luz,AZUL);
+        var LUZ2 = new THREE.Mesh (luz,ROJO);
+        var LUZ3 = new THREE.Mesh (luz,VERDE);
+        var LUZ4 = new THREE.Mesh (luz,AMARILLO);
+        var LUZ5 = new THREE.Mesh (luz,AZUL);
+        var LUZ6 = new THREE.Mesh (luz,ROJO);
+        var LUZ7 = new THREE.Mesh (luz,VERDE);
+        var LUZ8 = new THREE.Mesh (luz,AMARILLO);
+        var LUZ9 = new THREE.Mesh (luz,BLANCO);
+        var LUZ10 = new THREE.Mesh (luz,BLANCO);
+        var LUZ11= new THREE.Mesh (luz,BLANCO);
+        var LUZ12= new THREE.Mesh (luz,BLANCO);
+        var LUZ13 = new THREE.Mesh (luz,BLANCO);
+        var LUZ14 = new THREE.Mesh (luz,BLANCO);
+        var LUZ15 = new THREE.Mesh (luz,BLANCO);
+        var LUZ16 = new THREE.Mesh (luz,BLANCO);
+        //UBICACIONES DE OBJETOS
+        FRANJAPISO.rotation.x= Math.PI/2;
+        FRANJAPISO.position.y= 0.15;
+        PISO.position.y= -1;
+        ESCENARIO.position.y= 0;
+        ESCENARIO2.position.y= 1;
+        ESCENARIO2.rotation.x= Math.PI/2;
+        ESCENARIO2.rotation.z= Math.PI/7.5;
+        TORRE.position.y = 3.5;
+        TORRE.position.x = 12;
+        TORRE.position.z = 5;
+        TORRE2.position.y = 3.5;
+        TORRE2.position.x = 12;
+        TORRE2.position.z = 6;
+        TORRE3.position.y = 3.5;
+        TORRE3.position.x = 12;
+        TORRE3.position.z = -6;
+        TORRE4.position.y = 3.5;
+        TORRE4.position.x = 12;
+        TORRE4.position.z = -5;
+        TORREALTA.position.x = 8;
+        TORREALTA.position.z = 8;
+        TORREALTA.position.y = 5;
+        TORREALTA2.position.x = 7;
+        TORREALTA2.position.z = 9;
+        TORREALTA2.position.y = 5;
+        TORREALTA3.position.x = 7;
+        TORREALTA3.position.z = -9;
+        TORREALTA3.position.y = 5;
+        TORREALTA4.position.x = 8;
+        TORREALTA4.position.z = -8;
+        TORREALTA4.position.y = 5;
+        TORREALTA5.position.x = -8;
+        TORREALTA5.position.z = -8;
+        TORREALTA5.position.y = 5;
+        TORREALTA6.position.x = -9;
+        TORREALTA6.position.z = -7;
+        TORREALTA6.position.y = 5;
+        TORREALTA7.position.x = -8;
+        TORREALTA7.position.z = 8;
+        TORREALTA7.position.y = 5;
+        TORREALTA8.position.x = -9;
+        TORREALTA8.position.z = 7;
+        TORREALTA8.position.y = 5;
+        LUZ.position.y = 5;
+        LUZ.position.x = 7.2;
+        LUZ.position.z = 8.2;
+        LUZ2.position.y = 6;
+        LUZ2.position.x = 7.2;
+        LUZ2.position.z = 8.2;
+        LUZ3.position.y = 7;
+        LUZ3.position.x = 7.2;
+        LUZ3.position.z = 8.2;
+        LUZ4.position.y = 8;
+        LUZ4.position.x = 7.2;
+        LUZ4.position.z = 8.2;
+        LUZ5.position.y = 5;
+        LUZ5.position.x = 7.2;
+        LUZ5.position.z = -8.2;
+        LUZ6.position.y = 6;
+        LUZ6.position.x = 7.2;
+        LUZ6.position.z = -8.2;
+        LUZ7.position.y = 7;
+        LUZ7.position.x = 7.2;
+        LUZ7.position.z = -8.2;
+        LUZ8.position.y = 8;
+        LUZ8.position.x = 7.2;
+        LUZ8.position.z = -8.2;
+        PERSONAJE1.position.y =3.5;
+        PERSONAJE2.position.y =2;
+       
+        //CICLOS 
+        var j = 1;
+        var i =1;
+        while(i!=7){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+          TUBOTORRE.position.z = -5.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= 12;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=7){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+              TUBOTORRE.position.z = -5.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= 12;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+        var j = 1;
+        var i =1;
+        while(i!=7){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+          TUBOTORRE.position.z = 5.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= 12;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=7){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+              TUBOTORRE.position.z = 5.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= 12;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+        var j = 1;
+        var i =1;
+        while(i!=10){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+          TUBOTORRE.rotation.z= Math.PI/6;
+          TUBOTORRE.position.z = 8.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= 7.5;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=10){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+              TUBOTORRE.rotation.z= -Math.PI/6;
+              TUBOTORRE.position.z = 8.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= 7.5;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+        var j = 1;
+        var i =1;
+        while(i!=10){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+          TUBOTORRE.rotation.z= -Math.PI/6;
+          TUBOTORRE.position.z = -8.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= 7.5;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=10){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+              TUBOTORRE.rotation.z= Math.PI/6;
+              TUBOTORRE.position.z = -8.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= 7.5;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+        var j = 1;
+        var i =1;
+        while(i!=10){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+          TUBOTORRE.rotation.z= Math.PI/6;
+          TUBOTORRE.position.z = -7.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= -8.5;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=10){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,matespejo);
+              TUBOTORRE.rotation.z= -Math.PI/6;
+              TUBOTORRE.position.z = -7.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= -8.5;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+        
+        var j = 1;
+        var i =1;
+        while(i!=10){
+          var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+          var TUBOTORRE = new THREE.Mesh(tubotorre,GRISOSCURO);
+          TUBOTORRE.rotation.z= -Math.PI/6;
+          TUBOTORRE.position.z = 7.5;
+          TUBOTORRE.position.y= i;
+          TUBOTORRE.position.x= -8.5;
+          TUBOTORRE.rotation.x= Math.PI/6;
+          scene.add (TUBOTORRE);
+          i= i+1.5;
+            while (j!=10){
+              var tubotorre = new THREE.BoxGeometry (0.2,2,0.2);
+              var TUBOTORRE = new THREE.Mesh(tubotorre,GRISOSCURO);
+              TUBOTORRE.rotation.z= Math.PI/6;
+              TUBOTORRE.position.z = 7.5;
+              TUBOTORRE.position.y= j;
+              TUBOTORRE.position.x= -8.5;
+              TUBOTORRE.rotation.x= Math.PI/6*(-1);
+              scene.add (TUBOTORRE);
+              j= j+1.5;
+            };
+        };
+
+        var PERSONAJE = new THREE.Group ();
+        PERSONAJE.add (PERSONAJE1);
+        PERSONAJE.add (PERSONAJE2);
+        //sombras 
+        PISO.receiveShadow = true;
+        FRANJAPISO.receiveShadow = true;
+        ESCENARIO.receiveShadow= true;
+        ESCENARIO.castShadow= true;
+        ESCENARIO2.receiveShadow= true;
+        ESCENARIO2.castShadow= true;
+        TORRE.receiveShadow= true;
+        TORRE.castShadow= true;
+        TORRE2.receiveShadow= true;
+        TORRE2.castShadow= true;
+        TORRE3.receiveShadow= true;
+        TORRE3.castShadow= true;
+        TORRE4.receiveShadow= true;
+        TORRE4.castShadow= true;
+        TORREALTA.receiveShadow= true;
+        TORREALTA.castShadow= true;
+        TORREALTA2.receiveShadow= true;
+        TORREALTA2.castShadow= true;
+        TORREALTA3.receiveShadow= true;
+        TORREALTA3.castShadow= true;
+        TORREALTA4.receiveShadow= true;
+        TORREALTA4.castShadow= true;
+        TORREALTA5.receiveShadow= true;
+        TORREALTA5.castShadow= true;
+        TORREALTA6.receiveShadow= true;
+        TORREALTA6.castShadow= true;
+        TORREALTA7.receiveShadow= true;
+        TORREALTA7.castShadow= true;
+        TORREALTA8.receiveShadow= true;
+        TORREALTA8.castShadow= true;
+        //ELEMENTOS EN ESCENA 
+        scene.add (PISO);
+        scene.add (FRANJAPISO);
+        scene.add (ESCENARIO);
+        scene.add (ESCENARIO2);
+        scene.add (TORRE);
+        scene.add (TORRE2);
+        scene.add (TORRE3);
+        scene.add (TORRE4);
+        scene.add (TORREALTA);
+        scene.add (TORREALTA2);
+        scene.add (TORREALTA3);
+        scene.add (TORREALTA4);
+        scene.add (TORREALTA5);
+        scene.add (TORREALTA6);
+        scene.add (TORREALTA7);
+        scene.add (TORREALTA8);
+        scene.add (LUZ);
+        scene.add (LUZ2);
+        scene.add (LUZ3);
+        scene.add (LUZ4);
+        scene.add (LUZ5);
+        scene.add (LUZ6);
+        scene.add (LUZ7);
+        scene.add (LUZ8);
+              
+        //GRILLAS DE ESCENA 
+        scene.add (arrowX);
+        scene.add (arrowZ);
+        scene.add (arrowY);
+        camera.position.x = -50;
+        camera.position.y = 20;	 
+        camera.position.z = 0;
+        camera.lookAt( 0, 0, 0 );
+        gradas();
+        silla ();
+        //CARROS
+      var geometry = new THREE.BoxGeometry(3,3,3);
+    carro = new THREE.Mesh( geometry, GRISOSCURO );
+    carro.position.y=10;
+    carro.position.z=35;
+    carro.position.x=30;
+    carro.receiveShadow = true;
+        carro.castShadow= true;
+  scene.add( carro );
+    
+			}
+      function carro1 (){
+        //CARROS
+      }
+    function silla ()
+    {
+      var matsilla = new THREE.MeshStandardMaterial( { color: 0xFF3A00, metalness: .1, roughness: 10 } );
+      // geo
+      var tablasilla = new THREE.BoxGeometry( 2, 0.1, 2 );
+      var tablasilla2 = new THREE.BoxGeometry( 2, 0.1, 3 );
+      // mesh 
+     var i =0;
+     var j = 1.2;
+     var k=0;
+      while (i!=3){
+
+        var TABLASILLA = new THREE.Mesh(tablasilla,matsilla);
+        var TABLASILLA2 = new THREE.Mesh(tablasilla2,matsilla);
+        // moves
+          TABLASILLA.position.z = 6.5;	
+          TABLASILLA.position.y = 2;	
+          TABLASILLA2.position.z = 7.71;	
+          TABLASILLA2.position.y = 3.5;	
+          TABLASILLA2.rotation.x = Math.PI/1.8;
+          var sillac = new THREE.Group();
+          
+          sillac.add (TABLASILLA);
+          sillac.add (TABLASILLA2);
+          sillac.scale.x= 0.5;
+          sillac.scale.y= 0.5;
+          sillac.scale.z= 0.5;
+          sillac.rotation.y= Math.PI/7;
+          sillac.position.z = 14.8+j;
+          sillac.position.x = 4.5+k;
+          sillac.position.y = 0.4+i;
+          scene.add (sillac);
+          i= i+0.6;
+          j= j+1;
+          k = k+0.6;
+      }
+    }
+
+    function gradas (){
+      var green = new THREE.MeshPhongMaterial({ color: 0xCFC2C2 });
+      cylinder10 = new THREE.CylinderGeometry(8.5,8.5,0.5,32,32);
+			cylinder11 = new THREE.CylinderGeometry(9,9,0.5,32,32);
+			cylinder12 = new THREE.CylinderGeometry(9,9,0.75,32,32);
+			cylinder13 = new THREE.CylinderGeometry(9.5,9.5,0.75,32,32);
+			cylinder14 = new THREE.CylinderGeometry(9.5,9.5,1,32,32);
+			cylinder15 = new THREE.CylinderGeometry(10,10,1,32,32);
+			cylinder16 = new THREE.CylinderGeometry(10,10,1.25,32,32);
+			cylinder17 = new THREE.CylinderGeometry(10.5,10.5,1.25,32,32);
+			cylinder18 = new THREE.CylinderGeometry(10.5,10.5,1.5,32,32);
+			cylinder19 = new THREE.CylinderGeometry(11,11,1.5,32,32);
+			cylinder20 = new THREE.CylinderGeometry(6,6,3,3,1);
+			cylinder21 = new THREE.CylinderGeometry(5,5,3,3,1);
+
+      steps = new THREE.Mesh(cylinder10,green);
+			steps1 = new THREE.Mesh(cylinder11,green);
+			steps2 = new THREE.Mesh(cylinder12,green);
+			steps3 = new THREE.Mesh(cylinder13,green);
+			steps4 = new THREE.Mesh(cylinder14,green);
+			steps5 = new THREE.Mesh(cylinder15,green);
+			steps6 = new THREE.Mesh(cylinder16,green);
+			steps7 = new THREE.Mesh(cylinder17,green);
+			steps8 = new THREE.Mesh(cylinder18,green);
+			steps9 = new THREE.Mesh(cylinder19,green);
+      
+
+			division = new THREE.Mesh(cylinder20,green);
+			division1 = new THREE.Mesh(cylinder21,green);
+			division2 = new THREE.Mesh(cylinder21,green);
+			division3 = new THREE.Mesh(cylinder21,green);
+			
+			division.rotation.y = Math.PI*3/2;
+			division1.rotation.y = Math.PI/2;
+			division2.rotation.y = Math.PI;
+			//CSG MOVES
+      steps.position.y = 0.25; 			
+      steps1.position.y = 0.25; 			
+      steps2.position.y = 0.375; 			
+      steps3.position.y = 0.375; 			
+      steps4.position.y = 0.5; 			
+      steps5.position.y = 0.5; 			
+      steps6.position.y = 0.625; 			
+      steps7.position.y = 0.625; 			
+      steps8.position.y = 0.75; 			
+      steps9.position.y = 0.75;
+			division.position.x = 10;
+			division1.position.x = -10;
+			division2.position.z = 10;
+			division3.position.z = -10;
+      var stepsCSG = THREE.CSG.fromMesh(steps);
+			var steps1CSG = THREE.CSG.fromMesh(steps1);
+			var steps2CSG = THREE.CSG.fromMesh(steps2);
+			var steps3CSG = THREE.CSG.fromMesh(steps3);
+			var steps4CSG = THREE.CSG.fromMesh(steps4);
+			var steps5CSG = THREE.CSG.fromMesh(steps5);
+			var steps6CSG = THREE.CSG.fromMesh(steps6);
+			var steps7CSG = THREE.CSG.fromMesh(steps7);
+			var steps8CSG = THREE.CSG.fromMesh(steps8);
+			var steps9CSG = THREE.CSG.fromMesh(steps9);
+
+			var divisionCSG = THREE.CSG.fromMesh(division);
+			var division1CSG = THREE.CSG.fromMesh(division1);
+			var division2CSG = THREE.CSG.fromMesh(division2);
+			var division3CSG = THREE.CSG.fromMesh(division3);
+      var chairspot = steps1CSG.subtract(stepsCSG);
+			var chairspot1 = steps3CSG.subtract(steps2CSG);
+			var chairspot2 = steps5CSG.subtract(steps4CSG);
+			var chairspot3 = steps7CSG.subtract(steps6CSG);
+			var chairspot4 = steps9CSG.subtract(steps8CSG);
+
+			var spot = chairspot.union(chairspot1).union(chairspot2).union(chairspot3).union(chairspot4);
+			var div = spot.subtract(divisionCSG).subtract(division1CSG).subtract(division2CSG).subtract(division3CSG);
+
+      steps = THREE.CSG.toMesh(div);
+      steps.material = green;
+      steps.scale.x = 2.3;
+      steps.scale.y = 2.3;
+      steps.scale.z = 2.3;
+      var gchairspot = new THREE.Group();
+			gchairspot.add(steps);
+      steps.position.y = 0.25;
+			steps2.position.y = 0.375;
+			steps4.position.y = 0.5;
+			steps6.position.y = 0.625;
+			steps8.position.y = 0.75;
+      scene.add(gchairspot);
+    }
+    
+    function animate() {
+        requestAnimationFrame( animate );
+        controls.update()
+        render();
+    }
+    
+    function render(){
+      var dtime = Date.now()-startTime;
+  var speed = Date.now() * 0.00025;
+  console.log(camera.rotation);
+				
+
+		
+  var S=0;
+  var tx=0, ty=0, tz=0;
+	if(KeyA) {
+		tx=0; ty=0; tz=-0.35;
+	}
+	if(KeyD) {
+		tx=0; ty=0; tz=0.35;
+	}
+	if(KeyW){
+		tx=0.35; ty=0; tz=0;
+	}
+	if(KeyS){
+		tx=-0.35; ty=0; tz=0;
+        }
+
+var t = new THREE.Matrix4();
+	t.set( 	1, 0, 0, tx,
+		0, 1, 0, ty, 
+		0, 0, 1, tz,
+		0, 0, 0, 1);
+
+  carro.applyMatrix(t);
+        renderer.render( scene, camera );
+    }
+    </script>
+  </body>
+</html>

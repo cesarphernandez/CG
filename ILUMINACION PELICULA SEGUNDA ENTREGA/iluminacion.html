@@ -1,0 +1,459 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>ILUMINACION</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.js"></script>    
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src="js/csg.js"></script>
+		<script src="js/THREE.CSG.js"></script>
+    <script>
+		var scene, aspect, camera, renderer,controls;
+    var ambientLight,light;
+    var USE_WIREFRAME = false;
+		
+		init();
+		animate();
+	
+		function init(){
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x000000 );
+        aspect = window.innerWidth / window.innerHeight;
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+        renderer.shadowMap.enabled = true;// 
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild( renderer.domElement );
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+				  
+        var size = 20;
+        var arrowSize = 1;
+        var divisions = 25;
+        var origin = new THREE.Vector3( 0, 0, 0 );
+        var x = new THREE.Vector3( 1, 0, 0 );
+        var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );
+			  var color1 = new THREE.Color( 0x848B8E );
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA3333 );
+		  	var colorG = new THREE.Color( 0x33AA33 );
+		  	var colorB = new THREE.Color( 0x333366 );
+		  
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper = new THREE.AxesHelper( size );
+		  	var gridHelperXY = new THREE.GridHelper( size, divisions, color1, color1);
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+		  	var gridHelperYZ = new THREE.GridHelper( size, divisions, color1, color1 );
+            
+        //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+        gridHelperXY.rotateOnWorldAxis ( x, THREE.Math.degToRad(90) );
+        gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+        gridHelperYZ.rotateOnWorldAxis ( z, THREE.Math.degToRad(90) );
+            
+        //CREAR LAS FLECHAS QUE INDICAN LOS EJES DE COORDENADAS 3D
+        var arrowX = new THREE.ArrowHelper( x, origin, arrowSize, colorR );
+        var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
+        var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
+			
+        //CREAR ILUMINACIÓN
+        ambientLight = new THREE.AmbientLight(0x233D4D,0.05);
+        scene.add(ambientLight);	
+        
+        light = new THREE.PointLight(0xB2DDF6,0.6,100,3);
+        light.position.set(5,10,0);
+        light.castShadow = true;
+        light.shadow.camera.near = 5;
+        light.shadow.camera.far = 25;
+        scene.add(light);
+        light2 = new THREE.PointLight(0x313369,0.6,100,3);
+        light2.position.set(5,12,0);
+        light2.castShadow = true;
+        light2.shadow.camera.near = 5;
+        light2.shadow.camera.far = 25;
+        scene.add(light2);
+        
+        
+            
+			  //CREAR LOS MATERIALES    
+        var refle = new THREE.MeshLambertMaterial ( { color: 0xFFFFFF, reflectivity: 0.5 , refractionRatio: 0.5 });   
+        var gris = new THREE.MeshStandardMaterial( { color: 0xFFFFFF, metalness: 0.5, roughness: 0.5 } );     
+        var negro = new THREE.MeshStandardMaterial( { color: 0xFFFFFF} );     
+        var matpiso = new THREE.MeshPhongMaterial({color:0xffffff, wireframe:USE_WIREFRAME})
+        var matespejo = new THREE.MeshStandardMaterial( { color: 0xFFFFFF, metalness: 0.5, roughness: 0.3} );
+        var matpared = new THREE.MeshPhongMaterial({color:0x3A6384});
+        var matpared2 = new THREE.MeshPhongMaterial({color:0xEDF087});
+        var matboton = new THREE.MeshPhongMaterial({color:0xFFFFFF});
+        var matboton2 = new THREE.MeshPhongMaterial({color:0xFC1313});
+        var matmesa = new THREE.MeshPhongMaterial({color:0x646C6E, wireframe:USE_WIREFRAME});
+        var matmesa2 = new THREE.MeshStandardMaterial( { color: 0xE2DECB, metalness: .9, roughness: 0.5 } );
+        var matsilla = new THREE.MeshStandardMaterial( { color: 0xFFFFFF, metalness: .1, roughness: 10 } );
+        var matbala = new THREE.MeshPhongMaterial({color:0xF3D80F, wireframe:USE_WIREFRAME});
+      
+        
+			  //CREAR LAS GEOMETRÍAS
+        var espejo = new THREE.BoxGeometry( 18, 5, 0.1 );
+        var espejo2 = new THREE.BoxGeometry( 18.5, 5.1, 0.1 );
+        var pared = new THREE.BoxGeometry( 20, 10, 0.1 );
+        var pareda = new THREE.BoxGeometry( 20, 7.5, 0.1 );
+        var piso = new THREE.BoxGeometry( 20, 0.1, 20 );
+        var tablamesa = new THREE.BoxGeometry( 5, 0.1, 10 );
+        var tablasilla = new THREE.BoxGeometry( 2, 0.1, 2 );
+        var tablasilla2 = new THREE.BoxGeometry( 2, 0.1, 3 );
+        var huecoesposa = new THREE.BoxGeometry( 1, 0.05, 0.5 );
+        var patamesa = new THREE.BoxGeometry( 0.25, 3, 0.25 );
+        var boton = new THREE.BoxGeometry( 0.4, 0.4, 0.4 );
+        var boton2 = new THREE.CylinderGeometry( 0.08, 0.08, 0.2, 32 );
+        var patasilla = new THREE.CylinderGeometry( 0.1, 0.1, 2, 32 );
+        var divisionP = new THREE.CylinderGeometry( 0.2, 0.2, 20, 32 );
+        var bala = new THREE.CylinderGeometry( 0.05, 0.05, 0.4, 32 );
+        var cbala = new THREE.CylinderGeometry( 0.005, 0.05, 0.1, 32 );
+        var califaccion = new THREE.CylinderGeometry( 0.2, 0.2, 3, 32 );
+        var califaccionl = new THREE.CylinderGeometry( 0.2, 0.2, 1, 32 );
+        var ventilacion = new THREE.BoxGeometry(0.1,1,2);
+        var hventilacion = new THREE.BoxGeometry(0.1,0.1,1.6);
+        var CALIFACCION = new THREE.Mesh (califaccion, matsilla);
+        var CALIFACCION2 = new THREE.Mesh (califaccion, matsilla);
+        var CALIFACCION3 = new THREE.Mesh (califaccion, matsilla);
+        var CALIFACCION4 = new THREE.Mesh (califaccion, matsilla);
+        var CALIFACCION5 = new THREE.Mesh (califaccion, matsilla);
+        var CALIFACCIONL = new THREE.Mesh (califaccionl, matsilla);
+        var CALIFACCIONL2 = new THREE.Mesh (califaccionl, matsilla);
+        var CALIFACCIONL3 = new THREE.Mesh (califaccionl, matsilla);
+        var CALIFACCIONL4 = new THREE.Mesh (califaccionl, matsilla);
+        var CALIFACCIONL5 = new THREE.Mesh (califaccionl, matsilla);
+        var HVENTILACION = new THREE.Mesh (hventilacion, negro);
+        var HVENTILACION2 = new THREE.Mesh (hventilacion, negro);
+        var HVENTILACION3 = new THREE.Mesh (hventilacion, negro);
+        var HVENTILACION4 = new THREE.Mesh (hventilacion, negro);
+        var VENTILACION = new THREE.Mesh (ventilacion, matsilla);
+        var ESPEJO = new THREE.Mesh(espejo,matespejo);
+        var ESPEJO2 = new THREE.Mesh(espejo2,matpiso);
+        var PISO = new THREE.Mesh(piso,matpiso);
+        var PARED = new THREE.Mesh(pared,matpared);
+        var PARED2 = new THREE.Mesh(pared,matpared);
+        var PAREDA = new THREE.Mesh(pareda,matpared2);
+        var PAREDA2 = new THREE.Mesh(pareda,matpared2);
+        var TABLAMESA = new THREE.Mesh(tablamesa,matmesa2);
+        var HUECOESPOSA = new THREE.Mesh(huecoesposa,gris);
+        var HUECOESPOSA2 = new THREE.Mesh(huecoesposa,gris);
+        var PATAMESA = new THREE.Mesh(patamesa,matmesa);
+        var PATAMESA2 = new THREE.Mesh(patamesa,matmesa);
+        var PATAMESA3 = new THREE.Mesh(patamesa,matmesa);
+        var PATAMESA4 = new THREE.Mesh(patamesa,matmesa);
+        var PATASILLA = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA2 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA3 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA4 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA5 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA6 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA7 = new THREE.Mesh(patasilla,matsilla);
+        var PATASILLA8 = new THREE.Mesh(patasilla,matsilla);
+        var TABLASILLA = new THREE.Mesh(tablasilla,matsilla);
+        var TABLASILLA2 = new THREE.Mesh(tablasilla2,matsilla);
+        var TABLASILLA3 = new THREE.Mesh(tablasilla,matsilla);
+        var TABLASILLA4 = new THREE.Mesh(tablasilla2,matsilla);
+        var DIVISIONP = new THREE.Mesh(divisionP,matmesa2);
+        var DIVISIONP2 = new THREE.Mesh(divisionP,matmesa2);
+        var BALA = new THREE.Mesh(bala,matbala);
+        var CBALA = new THREE.Mesh(cbala,matbala);
+        var BOTON = new THREE.Mesh (boton,matboton);
+        var BOTON2 = new THREE.Mesh (boton2,matboton2);
+        var material = new THREE.LineBasicMaterial({color: 0x7E7E7E, opacity : 0});
+        var i=-10; 
+        var k= 4;
+        while (i<10)
+        {
+            while (k<11.5)
+            {
+              var points2 = [];
+              points2.push( new THREE.Vector3( -9.8, k, 10 ) );
+              points2.push( new THREE.Vector3( -9.8, k, -10 ) );
+              var geometry2 = new THREE.BufferGeometry().setFromPoints( points2 );
+              var line2 = new THREE.Line( geometry2, material );
+              scene.add( line2 );
+              var points3 = [];
+              points3.push( new THREE.Vector3( 10, k, -9.8 ) );
+              points3.push( new THREE.Vector3( -10, k, -9.8 ) );
+              var geometry3 = new THREE.BufferGeometry().setFromPoints( points3 );
+              var line3 = new THREE.Line( geometry3, material );
+              scene.add( line3 );
+              k= k+0.5;
+            }
+            var points = [];
+            points.push( new THREE.Vector3( -9.8, 11.2, i ) );
+            points.push( new THREE.Vector3( -9.8, 3.5, i ) );
+            var geometry = new THREE.BufferGeometry().setFromPoints( points );
+            var line = new THREE.Line( geometry, material );
+            scene.add( line );
+            var points4 = [];
+            points4.push( new THREE.Vector3( i, 11.2, -9.8 ) );
+            points4.push( new THREE.Vector3( i, 3.5, -9.8 ) );
+            var geometry4 = new THREE.BufferGeometry().setFromPoints( points4 );
+            var line4 = new THREE.Line( geometry4, material );
+            scene.add( line4 );
+            i++;
+        }
+      
+		  	//AGREGAR A LA ESCENA
+        gridHelperXY.position.z=-10.1;
+        gridHelperXY.position.x=0.1;
+        gridHelperXY.position.y=1.3;  
+        gridHelperYZ.position.x=-9.8;
+        gridHelperYZ.position.z=0.1;
+        gridHelperYZ.position.y=1.3;  
+		  	//scene.add( gridHelperXY );
+		  	//scene.add( gridHelperYZ );
+        //scene.add( gridHelperXZ );
+		  	scene.add( arrowX );	
+		  	scene.add( arrowY );	
+		  	scene.add( arrowZ );
+        HUECOESPOSA.position.y = 3.05; 
+        HUECOESPOSA.position.z = -4; 
+        HUECOESPOSA.position.x = -1.2; 
+        HUECOESPOSA2.position.y = 3.05; 
+        HUECOESPOSA2.position.z = -4; 
+        HUECOESPOSA2.position.x = 1.2; 
+        ESPEJO.position.y = 6.6;	
+        ESPEJO.position.z = -9.7;
+        ESPEJO2.position.y = 6.6;	
+        ESPEJO2.position.z = -9.8;
+        TABLAMESA.position.y = 3;	
+        PATAMESA.position.y = 1.5;	
+        PATAMESA.position.x = 2;	
+        PATAMESA.position.z = 4.5;	
+        PATAMESA2.position.y = 1.5;	
+        PATAMESA2.position.x = -2;	
+        PATAMESA2.position.z = 4.5;	
+        PATAMESA3.position.y = 1.5;	
+        PATAMESA3.position.x = 2;	
+        PATAMESA3.position.z = -4.5;	
+        PATAMESA4.position.y = 1.5;	
+        PATAMESA4.position.x = -2;	
+        PATAMESA4.position.z = -4.5;	
+        PATASILLA.position.y = 1;	
+        PATASILLA.position.x = 0.8;	
+        PATASILLA.position.z = 7.2;	
+        PATASILLA2.position.y = 1;	
+        PATASILLA2.position.x = 0.8;	
+        PATASILLA2.position.z = 5.8;	
+        PATASILLA3.position.y = 1;	
+        PATASILLA3.position.x = -0.8;	
+        PATASILLA3.position.z = 7.2;	
+        PATASILLA4.position.y = 1;	
+        PATASILLA4.position.x = -0.8;	
+        PATASILLA4.position.z = 5.8;	
+        PATASILLA5.position.y = 1;	
+        PATASILLA5.position.x = 0.8;	
+        PATASILLA5.position.z = -7.2;	
+        PATASILLA6.position.y = 1;	
+        PATASILLA6.position.x = 0.8;	
+        PATASILLA6.position.z = -5.8;	
+        PATASILLA7.position.y = 1;	
+        PATASILLA7.position.x = -0.8;	
+        PATASILLA7.position.z = -7.2;	
+        PATASILLA8.position.y = 1;	
+        PATASILLA8.position.x = -0.8;	
+        PATASILLA8.position.z = -5.8;	
+        TABLASILLA.position.z = 6.5;	
+        TABLASILLA.position.y = 2;	
+        TABLASILLA2.position.z = 7.71;	
+        TABLASILLA2.position.y = 3.5;	
+        TABLASILLA2.rotation.x = Math.PI/1.8;
+        TABLASILLA3.position.z = -6.5;	
+        TABLASILLA3.position.y = 2;	
+        TABLASILLA4.position.z = -7.71;	
+        TABLASILLA4.position.y = 3.5;	
+        TABLASILLA4.rotation.x = Math.PI/2.25;
+        PARED.position.y = 5;	
+        PARED.position.z = -10;
+        PARED2.position.y = 5;	
+        PARED2.position.x = -10;
+        PARED2.rotation.y = Math.PI/2;
+        PAREDA.position.y = 7.5;	
+        PAREDA.position.z = -9.9;
+        PAREDA2.position.y = 7.5;	
+        PAREDA2.position.x = -9.9;
+        PAREDA2.rotation.y = Math.PI/2;
+        DIVISIONP.rotation.x = Math.PI/2;
+        DIVISIONP.position.x = -9.8;
+        DIVISIONP.position.y = 3.6;
+        DIVISIONP2.rotation.z = Math.PI/2;
+        DIVISIONP2.position.z = -9.8;
+        DIVISIONP2.position.y = 3.6;
+        BALA.position.y = 3.2;
+        BALA.position.z = 4.2;
+        BALA.position.x = -1;
+        CBALA.position.y = 3.45;
+        CBALA.position.z = 4.2;
+        CBALA.position.x = -1;
+        BOTON.position.x= -9.9;
+        BOTON.position.y= 6;
+        BOTON.position.z= 7;
+        BOTON2.position.y= 6;
+        BOTON2.position.z= 7;
+        BOTON2.position.x= -9.7;
+        BOTON2.rotation.z= Math.PI/2;
+        TABLAMESA.receiveShadow = true;
+        TABLAMESA.castShadow = true;
+        TABLASILLA.receiveShadow = true;
+        TABLASILLA.castShadow = true;
+        TABLASILLA2.receiveShadow = true;
+        TABLASILLA2.castShadow = true;
+        TABLASILLA3.receiveShadow = true;
+        TABLASILLA3.castShadow = true;
+        TABLASILLA4.receiveShadow = true;
+        TABLASILLA4.castShadow = true;
+        PATAMESA.receiveShadow = true;
+        PATAMESA.castShadow = true;
+        PATAMESA2.receiveShadow = true;
+        PATAMESA2.castShadow = true;
+        PATAMESA3.receiveShadow = true;
+        PATAMESA3.castShadow = true;
+        PATAMESA4.receiveShadow = true;
+        PATAMESA4.castShadow = true;
+        PATASILLA.receiveShadow = true;
+        PATASILLA.castShadow = true;
+        PATASILLA2.receiveShadow = true;
+        PATASILLA2.castShadow = true;
+        PATASILLA3.receiveShadow = true;
+        PATASILLA3.castShadow = true;
+        PATASILLA4.receiveShadow = true;
+        PATASILLA4.castShadow = true;
+        PATASILLA5.receiveShadow = true;
+        PATASILLA5.castShadow = true;
+        PATASILLA6.receiveShadow = true;
+        PATASILLA6.castShadow = true;
+        PATASILLA7.receiveShadow = true;
+        PATASILLA7.castShadow = true;
+        PATASILLA8.receiveShadow = true;
+        PATASILLA8.castShadow = true;
+        BALA.receiveShadow = true;
+        BALA.castShadow = true;
+        BOTON.receiveShadow = true;
+        BOTON.castShadow = true;
+        BOTON2.receiveShadow = true;
+        BOTON2.castShadow = true;
+        PISO.receiveShadow = true;
+        VENTILACION.position.y =9;
+        VENTILACION.position.z =-7;
+        VENTILACION.position.x =-9.7;
+        HVENTILACION.position.z =-7;
+        HVENTILACION.position.x =-9.65;
+        HVENTILACION.position.y = 9.3;
+        HVENTILACION2.position.z =-7;
+        HVENTILACION2.position.x =-9.65;
+        HVENTILACION2.position.y = 9.1 ;
+        HVENTILACION3.position.z =-7;
+        HVENTILACION3.position.x =-9.65;
+        HVENTILACION3.position.y = 8.9 ;
+        HVENTILACION4.position.z =-7;
+        HVENTILACION4.position.x =-9.65;
+        HVENTILACION4.position.y = 8.7 ;
+        CALIFACCION.position.z = -6 ;
+        CALIFACCION.position.x = -9.5 ;
+        CALIFACCION.position.y = 1.5 ;
+        CALIFACCION2.position.z = -5.3 ;
+        CALIFACCION2.position.x = -9.5 ;
+        CALIFACCION2.position.y = 1.5 ;
+        CALIFACCION3.position.z = -4.6 ;
+        CALIFACCION3.position.x = -9.5 ;
+        CALIFACCION3.position.y = 1.5 ;
+        CALIFACCION4.position.z = -3.9 ;
+        CALIFACCION4.position.x = -9.5 ;
+        CALIFACCION4.position.y = 1.5 ;
+        CALIFACCION5.position.z = -3.2 ;
+        CALIFACCION5.position.x = -9.5 ;
+        CALIFACCION5.position.y = 1.5 ;
+        CALIFACCIONL.position.z = -6 ;
+        CALIFACCIONL.position.x = -9.9 ;
+        CALIFACCIONL.position.y = 2.855 ;
+        CALIFACCIONL.rotation.z = Math.PI/2; ;
+        CALIFACCIONL2.position.z = -5.3 ;
+        CALIFACCIONL2.position.x = -9.9 ;
+        CALIFACCIONL2.position.y = 2.855 ;
+        CALIFACCIONL2.rotation.z = Math.PI/2; ;
+        CALIFACCIONL3.position.z = -4.6 ;
+        CALIFACCIONL3.position.x = -9.9 ;
+        CALIFACCIONL3.position.y = 2.855 ;
+        CALIFACCIONL3.rotation.z = Math.PI/2; ;
+        CALIFACCIONL4.position.z = -3.9 ;
+        CALIFACCIONL4.position.x = -9.9 ;
+        CALIFACCIONL4.position.y = 2.855 ;
+        CALIFACCIONL4.rotation.z = Math.PI/2; ;
+        CALIFACCIONL5.position.z = -3.2 ;
+        CALIFACCIONL5.position.x = -9.9 ;
+        CALIFACCIONL5.position.y = 2.855 ;
+        CALIFACCIONL5.rotation.z = Math.PI/2; ;
+          
+        scene.add (CALIFACCIONL);
+        scene.add (CALIFACCIONL2);
+        scene.add (CALIFACCIONL3);
+        scene.add (CALIFACCIONL4);
+        scene.add (CALIFACCIONL5);
+        scene.add (CALIFACCION);
+        scene.add (CALIFACCION2);
+        scene.add (CALIFACCION3);
+        scene.add (CALIFACCION4);
+        scene.add (CALIFACCION5);
+        scene.add (HVENTILACION);
+        scene.add (HVENTILACION2);
+        scene.add (HVENTILACION3);
+        scene.add (HVENTILACION4);
+        scene.add (VENTILACION);
+        scene.add (BOTON);
+        scene.add (BOTON2);
+        scene.add (BALA);
+        scene.add (CBALA);
+        scene.add(HUECOESPOSA);
+        scene.add(HUECOESPOSA2);
+			  scene.add(TABLAMESA);
+			  scene.add(TABLASILLA);
+			  scene.add(TABLASILLA2);
+			  scene.add(TABLASILLA3);
+			  scene.add(TABLASILLA4);
+			  scene.add(DIVISIONP);
+			  scene.add(DIVISIONP2);
+			  scene.add(PATAMESA);
+			  scene.add(PATAMESA2);
+			  scene.add(PATAMESA3);
+			  scene.add(PATAMESA4);
+			  scene.add(PATASILLA);
+			  scene.add(PATASILLA2);
+			  scene.add(PATASILLA3);
+			  scene.add(PATASILLA4);
+			  scene.add(PATASILLA5);
+			  scene.add(PATASILLA6);
+			  scene.add(PATASILLA7);
+			  scene.add(PATASILLA8);
+			  scene.add( ESPEJO);
+			  scene.add( ESPEJO2);
+			  scene.add( PARED);
+			  scene.add( PARED2);
+			  scene.add( PAREDA);
+			  scene.add( PAREDA2);
+			  scene.add( PISO);
+
+       
+        camera.position.x = 25;
+        camera.position.y = 25;	 
+        camera.position.z = 25;
+        camera.lookAt( 0, 0, 0 );
+			}
+    
+    function animate() {
+        requestAnimationFrame( animate );
+        controls.update()
+        render();
+    }
+    
+    function render(){
+        renderer.render( scene, camera );
+    }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,203 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <title>Ray Trasing</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <script src="js/three.js"></script>
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src='js/libs/dat.gui.min.js'></script>
+	<script>
+	
+		var scene, aspect, camera, camera2, renderer, controls;
+        var mapWidth = 320, mapHeight = 240;
+        var w = window.innerWidth, h = window.innerHeight;
+        var frustumSize = 5;
+		var startTime = Date.now();
+		
+		init();
+		animate();
+	
+		function init(){
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xAAAAAA );
+			aspect = window.innerWidth / window.innerHeight;
+			camera = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+			camera2 = new THREE.PerspectiveCamera( 45, 1.33, 0.1, 50);
+            var helper = new THREE.CameraHelper( camera2 );
+            scene.add( helper );
+			renderer = new THREE.WebGLRenderer({antialias: true});
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			controls = new THREE.OrbitControls( camera, renderer.domElement );
+            var material = new THREE.LineBasicMaterial({color: 0x0000ff});
+			var a = 0, b = 0, c = -1;
+			var vector = new THREE.Vector3(a,b,c);
+			console.log(vector);
+            var points = [];
+			points.push(new THREE.Vector3(0, 0, 0));
+			points.push(new THREE.Vector3(a * 100, b * 100, c * 100));
+
+            var geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+            var line = new THREE.Line(geometry, material);
+            scene.add(line);
+			
+			var size = 10;
+			var arrowSize = 1;
+			var divisions = size;
+			var origin = new THREE.Vector3( 0, 0, 0 );
+			var x = new THREE.Vector3( 1, 0, 0 );
+			var y = new THREE.Vector3( 0, 1, 0 );
+		  	var z = new THREE.Vector3( 0, 0, 1 );
+			var color1 = new THREE.Color( 0xFFFFFF );
+		  	var color2 = new THREE.Color( 0x333333 );
+		  	var colorR = new THREE.Color( 0xAA3333 );
+		  	var colorG = new THREE.Color( 0x33AA33 );
+		  	var colorB = new THREE.Color( 0x333366 );
+		  
+		  	//CREAR LAS GRILLAS PARA EL ESCENARIO
+		  	var axesHelper = new THREE.AxesHelper( size );
+		  	var gridHelperXY = new THREE.GridHelper( size, divisions, color1, color1);
+		  	var gridHelperXZ = new THREE.GridHelper( size, divisions, color2, color2 );
+		  	var gridHelperYZ = new THREE.GridHelper( size, divisions, color2, color2 );
+            
+            //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+            gridHelperXY.rotateOnWorldAxis ( x, THREE.Math.degToRad(90) );
+            gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+            gridHelperYZ.rotateOnWorldAxis ( z, THREE.Math.degToRad(90) );
+            
+            //CREAR LAS FLECHAS QUE INDICAN LOS EJES DE COORDENADAS 3D
+            var arrowX = new THREE.ArrowHelper( x, origin, arrowSize, colorR );
+            var arrowY = new THREE.ArrowHelper( y, origin, arrowSize, colorG );
+            var arrowZ = new THREE.ArrowHelper( z, origin, arrowSize, colorB );
+            
+            //CREAR ILUMINACIÓN
+            var ambient = new THREE.AmbientLight( 0xffffff, 2 );
+            scene.add( ambient );
+            
+            var pointLight = new THREE.PointLight( 0xffffff, 1, 100 );
+            pointLight.position.set( 5, 5, -5 );
+            scene.add( pointLight );
+            
+			//CREAR LAS GEOMETRÍAS
+			//Far plane
+			var width = 16.0;
+			var height = 9.0;
+			var planeGeometry = new THREE.PlaneGeometry(width, height);
+
+			//CUBO EN EL ESPACIO
+			var boxGeometry = new THREE.BoxGeometry(1,2,1);
+				
+            //CREAR LOS MATERIALES
+            var material1 = new THREE.MeshStandardMaterial( { color: 0xAA3333, metalness: 0.5, roughness: 0.1 } );
+            var material2 = new THREE.MeshStandardMaterial( { color: 0x33AA33, metalness: 0.5, roughness: 0.1 } );
+            var material3 = new THREE.MeshStandardMaterial( { color: 0x3333AA, metalness: 0.5, roughness: 0.1 } );
+			
+			//CREAR LOS OBJETOS
+            scene.add( arrowX );
+            scene.add( arrowY );
+            scene.add( arrowZ );
+            
+			var geometry = new THREE.SphereGeometry(2, 16, 16);
+            var geometry2 = new THREE.ConeGeometry(2, 5, 32);
+            var geometry3 = new THREE.TorusGeometry(2, 1, 8, 32);
+            var meshMaterial = new THREE.MeshStandardMaterial({ color: 0x008080, side: THREE.DoubleSide} );
+            var meshMaterial1 = new THREE.MeshStandardMaterial({ color: 0xF79862, side: THREE.DoubleSide} );
+            var meshMaterial2 = new THREE.MeshStandardMaterial({ color: 0x808000, side: THREE.DoubleSide} );
+			meshMaterial.vertexColors = THREE.FaceColors;
+			
+			var lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.5 } );
+			
+			var sphere = new THREE.Mesh(geometry, meshMaterial);
+			var cube = new THREE.Mesh(geometry2, meshMaterial1);
+			var cone = new THREE.Mesh(geometry3, meshMaterial2);
+			var lines = new THREE.LineSegments(geometry, lineMaterial);
+			var lines2 = new THREE.LineSegments(geometry2, lineMaterial);
+			var lines3 = new THREE.LineSegments(geometry3, lineMaterial);
+			var geometryMod = new THREE.Geometry;
+			var j = 0;
+			var k = 0;
+			var p = 0;
+			while (j < 10) {
+				for (var i = 0; i < sphere.geometry.faces.length; i++){
+					if(vector.dot(sphere.geometry.faces[i].normal)>0){
+						sphere.geometry.faces.splice(i, 1);
+					}
+					//console.log(sphere.geometry.faces);
+				}
+				j++;
+			}
+			while (k < 10) {
+				for (var i = 0; i < cube.geometry.faces.length; i++) {
+					if (vector.dot(cube.geometry.faces[i].normal) > 0) {
+						cube.geometry.faces.splice(i, 1);
+                    }
+                    //console.log(sphere.geometry.faces);
+				}
+				k++;
+			}
+			while (p < 10) {
+				for (var i = 0; i < cone.geometry.faces.length; i++) {
+					if (vector.dot(cone.geometry.faces[i].normal) > 0) {
+						cone.geometry.faces.splice(i, 1);
+                    }
+                    //console.log(sphere.geometry.faces);
+				}
+				p++;
+            }
+
+			var group = new THREE.Group();
+			group.add(sphere);
+			group.add(lines);
+			group.translateZ(-10);
+			scene.add(group);
+			var group2 = new THREE.Group();
+			group2.add(cube);
+			group2.add(lines2);
+			group2.translateZ(-15);
+			group2.translateX(-4);
+			group2.translateY(4);
+			scene.add(group2);
+			var group3 = new THREE.Group();
+			group3.add(cone);
+			group3.add(lines3);
+			group3.translateZ(-15);
+			group3.translateX(4);
+			group3.translateY(-4);
+			scene.add( group3 );
+			
+			camera.position.x = 30;
+			camera.position.y = 0;
+		  	camera.position.z = -30;
+			
+			camera.lookAt(origin);
+		}
+		function animate() {
+			requestAnimationFrame( animate );
+			controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+			render();
+		}
+        function render() {
+            renderer.setViewport( 0, 0, w, h );
+            renderer.setScissor( 0, 0, w, h );
+            renderer.render( scene, camera );
+            renderer.setViewport( 10, 10, mapWidth, mapHeight );
+            renderer.setScissor( 10, 10, mapWidth, mapHeight );
+            renderer.setScissorTest( true );
+            renderer.render( scene, camera2 );
+		}
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
