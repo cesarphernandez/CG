@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html >
+	<head>
+		<title>PARCIAL 2 </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" />
+		<style>
+			body {
+				background-color: #f0f0f0;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="js/three.module.js"></script>
+		<script src="js/main.css"></script>
+		<script src="js/three.js"></script>
+		<script src='js/libs/dat.gui.min.js'></script>
+		<script src="js/controls/OrbitControls.js"></script>
+		
+		<div id="overlay">
+			<div>
+				<H1 align="center">
+					<button id="startButton"
+					style="
+					font-size: 50px;
+					background: url('https://i.pinimg.com/originals/55/be/73/55be73c28c233d1eaa642980a2bc0b63.jpg');
+					color: #fff;
+					border: #000 4px solid;
+					border-radius: 10px;
+					padding: 195px 450px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+						INICIAR JUEGO
+					</button>
+				</H1>
+			</div>
+		</div>
+		<div id="info">
+			<p>
+				<strong>COLORES: </strong>
+				<button id="color1"
+						style="
+					font-size: 12px;
+					background: #FF0909;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR ROJO
+				</button>
+				<button id="color2"
+						style="
+					font-size: 12px;
+					background: #2A62E5;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR AZUL
+				</button>
+				<button id="color3"
+						style="
+					font-size: 12px;
+					background: #F5DA10;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR AMARILLO
+				</button>
+				<button id="color4"
+						style="
+					font-size: 12px;
+					background: #15CD1A;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR VERDE
+				</button>
+				<button id="color5"
+						style="
+					font-size: 12px;
+					background: #10F2F5;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR ZIAN
+				</button>
+				<button id="color6"
+						style="
+					font-size: 12px;
+					background: #F5BA10;
+					color: #fff;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;">
+					COLOR NARANJA
+				</button>
+<p>
+				<strong>FIGURAS: </strong>
+				<button id="figura1"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"	
+					>ESFERA</button>
+				<button id="figura2"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"		
+					>CUBOIDE</button>
+				<button id="figura3"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"		
+					>ANILLO</button>
+				<button id="figura4"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"		
+					>CONO</button>
+				<button id="figura5"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"		
+					>CILINDRO</button>
+				<button id="figura9"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"		
+					>PARED</button>
+			<p>
+				<strong>ROTACIONES: </strong>
+				<button id="figura6"
+						style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"
+					>ROTAR Y</button>
+				<button id="figura7"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"	
+					>ROTAR Z</button>
+				<button id="figura10"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"	
+					>ROTAR X</button>
+				<button id="figura8"
+					style="        
+					font-size: 12px;
+					background: #fff;
+					color: #000;
+					border: #000 1px solid;
+					border-radius: 5px;
+					padding: 8px 10px;
+					text-transform: uppercase;
+					margin-left: 1px;"	
+					>DEVOLVER ROTACIONES</button>
+			
+			<p><strong>CLICK </strong>: Añade figura , <strong>SHIFT+CLICK</strong>: Remover figura</p>
+		</div>
+
+
+		<script type="module">
+			var rotate = 0;
+			var camera, scene, renderer;
+			var plane, controls;
+			var mouse, raycaster, isShiftDown = false, isSpaceDown = false;
+			var mat1;
+			var rollOverGeo;
+			var rollOverMesh, rollOverMaterial;
+			var cubeGeo, cubeMaterial;
+
+			var objects = [];
+
+
+			var startButton = document.getElementById('startButton'); //BOTON START
+			startButton.addEventListener('click', function () {
+
+				init();
+				animate();
+				render();
+
+			}, false);
+
+            var color1 = document.getElementById('color1');//COLOR ROJO
+			color1.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xF51616 });
+			});
+            var color2 = document.getElementById('color2');//COLOR AZUL
+			color2.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x0C4DFC });
+			});
+			var color3 = document.getElementById('color3');//COLOR AMARILLO
+			color3.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xF6F909 });
+			});
+			var color4 = document.getElementById('color4');//COLOR VERDE
+			color4.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x00D110 });
+			});
+			var color5 = document.getElementById('color5');//COLOR ZIAN
+			color5.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0x18E0BC });
+			});
+			var color6 = document.getElementById('color6');//COLOR NARANJA
+			color6.addEventListener('click', function () {
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xFF7C00 });
+			});
+			var figura1 = document.getElementById('figura1');//ESFERA
+			figura1.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.SphereGeometry(25, 32, 32);
+				rollOverGeo = new THREE.SphereGeometry(25, 32, 32);
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+			});
+			var figura2 = document.getElementById('figura2');//CUBO
+			figura2.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.BoxGeometry(100, 50, 50);
+				rollOverGeo = new THREE.BoxGeometry(100, 50, 50);
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+			});
+			var figura3 = document.getElementById('figura3');//TORUS
+			figura3.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.TorusGeometry(20, 10, 10, 100);
+				rollOverGeo = new THREE.TorusGeometry(25, 10, 10, 100);
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+			});
+			var figura4 = document.getElementById('figura4');//CONO
+			figura4.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.ConeGeometry(25, 50, 32);
+				rollOverGeo = new THREE.ConeGeometry(25, 50, 32);
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+			});
+			var figura5 = document.getElementById('figura5');//CILINDRO
+			figura5.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.CylinderGeometry(25, 25, 50, 32);;
+				rollOverGeo = new THREE.CylinderGeometry(25, 25, 50, 32);;
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+			});
+			var figura6 = document.getElementById('figura6');//ROTACION VERTICAL
+			figura6.addEventListener('click', function () {
+				rotate = 1;
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = Math.PI / 2;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				scene.add(rollOverMesh);
+
+			});
+			var figura7 = document.getElementById('figura7');//ROTACION HORIZONTAL
+			figura7.addEventListener('click', function () {
+				rotate = 2;
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.z = Math.PI / 2;
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.x = 0;
+				scene.add(rollOverMesh);
+			});
+			var figura8 = document.getElementById('figura8');//DEVOLVER ROTACIONES
+			figura8.addEventListener('click', function () {
+
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				scene.add(rollOverMesh);
+				rotate = 0;
+			});
+			var figura10 = document.getElementById('figura10');//ROTACION HORIZONTAL
+			figura10.addEventListener('click', function () {
+				rotate = 3;
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.x = Math.PI / 2;
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				scene.add(rollOverMesh);
+			});
+			var figura9 = document.getElementById('figura9');//PARED
+			figura9.addEventListener('click', function () {
+				scene.remove(rollOverMesh);
+				rollOverMesh.rotation.y = 0;
+				rollOverMesh.rotation.z = 0;
+				rollOverMesh.rotation.x = 0;
+				rotate = 0;
+				cubeGeo = new THREE.BoxGeometry(5, 300, 300);
+				rollOverGeo = new THREE.BoxGeometry(5, 300, 300);
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				rollOverMesh.position.y = 150;
+				scene.add(rollOverMesh);
+			});
+			var createEarthMaterial = function () {
+				var texture = new THREE.TextureLoader().load('js/9kjbk.png');
+				cubeMaterial = new THREE.MeshBasicMaterial({ map: texture });
+
+
+				return cubeMaterial;
+
+			};
+			function init() {
+				var overlay = document.getElementById('overlay');
+				overlay.remove();
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.set(3000, 800, 1500);
+				camera.lookAt(0, 0, 0);
+
+				scene.background = new THREE.Color(0xf0f0f0);
+
+				// SOMBRA A COLOR FIGURA
+
+				rollOverGeo = new THREE.BoxBufferGeometry(100, 50, 50);
+				rollOverMaterial = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0.5, transparent: true });
+				rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
+				scene.add(rollOverMesh);
+
+
+				// FIGURA
+
+                cubeGeo = new THREE.BoxBufferGeometry(100, 50, 50);
+				cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xC334B7 });
+
+				// GRILLA
+
+				var gridHelper = new THREE.GridHelper(2000, 40);
+				scene.add(gridHelper);
+				//
+
+				raycaster = new THREE.Raycaster();
+				mouse = new THREE.Vector2();
+
+				var geometry = new THREE.PlaneBufferGeometry(2000, 2000);
+				geometry.rotateX(- Math.PI / 2);
+
+				plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ visible: false }));
+				scene.add(plane);
+
+				objects.push(plane);
+
+				// lights
+
+				var ambientLight = new THREE.AmbientLight(0x606060);
+				scene.add(ambientLight);
+
+				var directionalLight = new THREE.DirectionalLight(0xffffff);
+				directionalLight.position.set(1, 0.75, 0.5).normalize();
+				scene.add(directionalLight);
+
+				renderer = new THREE.WebGLRenderer({ antialias: true });
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				document.body.appendChild(renderer.domElement);
+				controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+
+				document.addEventListener('mousemove', onDocumentMouseMove, false);
+				document.addEventListener('mousedown', onDocumentMouseDown, false);
+				document.addEventListener('keydown', onDocumentKeyDown, false);
+				document.addEventListener('keyup', onDocumentKeyUp, false);
+				window.addEventListener('resize', onWindowResize, false);
+			};
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(window.innerWidth, window.innerHeight);
+
+			}
+			function ROTATEY(voxel) {
+				if (rotate == 0) {
+
+				} else {
+					if (rotate == 1) {
+						voxel.rotation.y = Math.PI / 2;
+					} else {
+						if (rotate == 2) {
+							voxel.rotation.z = Math.PI / 2;
+						} else {
+							voxel.rotation.x = Math.PI / 2;
+						}
+					}
+				}
+				return voxel;
+			}
+			function onDocumentMouseMove(event) {
+
+				event.preventDefault();
+
+				mouse.set((event.clientX / window.innerWidth) * 2 - 1.01, - (event.clientY / window.innerHeight) * 2 + 1.62); //AJUSTAR EL MOUSE CON LA FIGURA
+
+				raycaster.setFromCamera(mouse, camera);
+
+
+				var intersects = raycaster.intersectObjects(objects);
+
+				if (intersects.length > 0) {
+
+					var intersect = intersects[0];
+					rollOverMesh.position.copy(intersect.point).add(intersect.face.normal);
+					rollOverMesh.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+
+				}
+
+				render();
+
+			}
+			function onDocumentMouseDown(event) {
+
+				event.preventDefault();
+
+				mouse.set((event.clientX / window.innerWidth) * 2 - 1.01, - (event.clientY / window.innerHeight) * 2 + 1.62);
+
+				raycaster.setFromCamera(mouse, camera);
+
+				var intersects = raycaster.intersectObjects(objects);
+
+				if (intersects.length > 0) {
+
+					var intersect = intersects[0];
+
+					// delete cube
+
+					if (isShiftDown) {
+
+						if (intersect.object !== plane) {
+
+							scene.remove(intersect.object);
+
+							objects.splice(objects.indexOf(intersect.object), 1);
+
+						}
+
+						// create cube
+
+					} else {
+
+						var voxel = new THREE.Mesh(cubeGeo, cubeMaterial);
+						voxel.position.copy(intersect.point).add(intersect.face.normal);
+						voxel.position.divideScalar(50).floor().multiplyScalar(50).addScalar(25);
+						ROTATEY(voxel);
+						scene.add(voxel);
+
+						objects.push(voxel);
+
+					}
+
+					render();
+
+				}
+
+			}
+
+
+
+			function onDocumentKeyDown(event) {
+
+				switch (event.keyCode) {
+
+					case 16: isShiftDown = true; break;
+
+				}
+
+			}// fFUNCION SHIT
+			function onDocumentKeyUp(event) {
+
+				switch (event.keyCode) {
+
+					case 16: isShiftDown = false; break;
+
+				}
+
+			}// FUNCION SHIFT
+			function animate() {
+				render();
+				controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+				requestAnimationFrame(animate);
+			}
+			function render() {
+
+				renderer.render(scene, camera);
+
+			}
+
+		</script>
+
+	</body>
+</html>
